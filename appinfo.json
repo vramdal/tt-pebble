@@ -1,0 +1,18 @@
+{
+    "versionLabel": "1.0",
+    "uuid": "0204a210-5188-4eb4-9ae2-0177df08b9c1",
+    "appKeys": {},
+    "longName": "TT-Pebble",
+    "versionCode": 1,
+    "capabilities": [
+        ""
+    ],
+    "shortName": "TT-Pebble",
+    "companyName": "vramdal",
+    "watchapp": {
+        "watchface": false
+    },
+    "resources": {
+        "media": []
+    }
+}
