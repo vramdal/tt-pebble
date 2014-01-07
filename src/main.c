@@ -37,6 +37,28 @@ static void player1_click_handler(ClickRecognizerRef recognizer, void *context) 
   update_text();
 }
 
+static void player1_reset_handler(ClickRecognizerRef recognizer, void *context) {
+	player1points = 0;
+	update_text();
+}
+
+static void player2_reset_handler(ClickRecognizerRef recognizer, void *context) {
+	player2points = 0;
+	update_text();
+}
+
+static void player1_reset_all_handler(ClickRecognizerRef recognizer, void *context) {
+	player1points = 0;
+	player1sets = 0;
+	update_text();
+}
+
+static void player2_reset_all_handler(ClickRecognizerRef recognizer, void *context) {
+	player2points = 0;
+	player2sets = 0;
+	update_text();
+}
+
 static void player2_click_handler(ClickRecognizerRef recognizer, void *context) {
   player2points++;
   if ((player2points >= 11) && (player2points > player1points + 1)) {
@@ -58,9 +80,13 @@ static void reset_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void click_config_provider(void *context) {
   const uint16_t repeat_interval_ms = 50;
   const uint16_t reset_hold_ms = 3000;
-  window_single_repeating_click_subscribe(BUTTON_ID_UP, repeat_interval_ms, (ClickHandler) player1_click_handler);
-  window_single_repeating_click_subscribe(BUTTON_ID_DOWN, repeat_interval_ms, (ClickHandler) player2_click_handler);
+  window_single_click_subscribe(BUTTON_ID_UP, (ClickHandler) player1_click_handler);
+  window_single_click_subscribe(BUTTON_ID_DOWN, (ClickHandler) player2_click_handler);
   window_long_click_subscribe(BUTTON_ID_SELECT, reset_hold_ms, (ClickHandler) reset_click_handler, NULL);
+  window_long_click_subscribe(BUTTON_ID_UP, reset_hold_ms, (ClickHandler) player1_reset_handler, NULL);
+  window_long_click_subscribe(BUTTON_ID_DOWN, reset_hold_ms, (ClickHandler) player2_reset_handler, NULL);
+  window_long_click_subscribe(BUTTON_ID_UP, reset_hold_ms * 2, (ClickHandler) player1_reset_all_handler, NULL);
+  window_long_click_subscribe(BUTTON_ID_DOWN, reset_hold_ms * 2, (ClickHandler) player2_reset_all_handler, NULL);
 }
 
 static void window_load(Window *me) {
@@ -69,12 +95,12 @@ static void window_load(Window *me) {
   action_bar_layer_set_click_config_provider(action_bar, click_config_provider);
 
   Layer *layer = window_get_root_layer(me);
-  const int16_t width = layer_get_frame(layer).size.w - ACTION_BAR_WIDTH - 3;
+  const int16_t width = layer_get_frame(layer).size.w /*- ACTION_BAR_WIDTH - 3*/;
 
   header_text_layer = text_layer_create(GRect(4, 0, width, 60));
   text_layer_set_font(header_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24));
   text_layer_set_background_color(header_text_layer, GColorClear);
-  text_layer_set_text(header_text_layer, "Bordtennis");
+  text_layer_set_text(header_text_layer, "Bordtennis-poeng");
   layer_add_child(layer, text_layer_get_layer(header_text_layer));
 
   body_text_layer = text_layer_create(GRect(4, 44, width, 60));
